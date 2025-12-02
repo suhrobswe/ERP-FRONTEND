@@ -3,11 +3,16 @@ import { Teachers } from "@/pages/admin/teachers/teachers";
 import { Profile } from "@/pages/admin/profile";
 import { Settings } from "@/pages/admin/settings";
 import { Groups } from "@/pages/admin/groups/groups";
+import { TeacherDetail } from "@/pages/admin/teachers/teacher-detail";
 
 export default [
     {
         path: "teachers",
         page: Teachers,
+    },
+    {
+        path: "teachers/detail/:id",
+        page: TeacherDetail,
     },
     {
         path: "students",
@@ -23,7 +28,7 @@ export default [
     },
 
     {
-        path: 'groups',
-        page: Groups
-    }
+        path: "groups",
+        page: Groups,
+    },
 ];

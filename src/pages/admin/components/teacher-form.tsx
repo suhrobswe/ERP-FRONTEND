@@ -31,7 +31,7 @@ import { Spinner } from "@/components/ui/spinner";
 import React from "react";
 
 const formSchema = z.object({
-    username: z.string().min(2, "Min 2 chars").max(50),
+    username: z.string().min(2, "Minimum 2 characters").max(50),
     password: z.string().optional(),
     name: z.string().min(2).max(50),
     specification: z.array(z.string()).min(1, "Select at least one"),
@@ -53,6 +53,7 @@ export const TeacherForm = ({
             specification: [],
         },
     });
+
     React.useEffect(() => {
         if (defaultValueData?.data) {
             const specs = Array.isArray(defaultValueData.data.specification)
@@ -61,12 +62,12 @@ export const TeacherForm = ({
                   )
                 : [];
             form.reset({
-                username: defaultValueData.data.username,
-                name: defaultValueData.data.name,
+                username: defaultValueData.data.username || "",
+                name: defaultValueData.data.name || "",
                 specification: specs,
             });
         }
-    }, [defaultValueData]);
+    }, [defaultValueData, form]);
 
     const client = useQueryClient();
     const { mutate, isPending } = useCreateTeacher();
@@ -74,20 +75,18 @@ export const TeacherForm = ({
         teacherId as string
     );
 
-    const { data: specificationData, isLoading } = useSpecification() as {
-        data: { data: { id: number; name: string }[] };
-        isLoading: boolean;
-    };
+    const { data: specificationData, isLoading } = useSpecification();
+    const specs = specificationData?.data || [];
 
     const onSubmit = (data: TeacherFormInput) => {
         if (defaultValueData) {
             return editMutate(data, {
                 onSuccess: (res) => {
-                    toast.success(res.message.uz);
+                    toast.success(res.message.en);
                     client.invalidateQueries({ queryKey: ["teacher_list"] });
                     closeModal?.();
                 },
-                onError: () => toast.error("Error updating!"),
+                onError: () => toast.error("Something went wrong!"),
             });
         }
 
@@ -98,17 +97,13 @@ export const TeacherForm = ({
                 form.reset();
                 closeModal?.();
             },
-            onError: () => toast.error("Xatolik!"),
+            onError: () => toast.error("Error creating teacher!"),
         });
     };
 
-    const specifications = specificationData?.data || [];
     const selectedSpecs = form.watch("specification");
-
-    const selectedSpecsText = selectedSpecs
-        .map(
-            (id) => specifications.find((spec) => String(spec.id) === id)?.name
-        )
+    const selectedText = selectedSpecs
+        .map((id) => specs.find((s) => String(s.id) === id)?.name)
         .filter(Boolean)
         .join(", ");
 
@@ -116,33 +111,38 @@ export const TeacherForm = ({
         <Form {...form}>
             <form
                 onSubmit={form.handleSubmit(onSubmit)}
-                className="space-y-6 p-8 bg-white border rounded-xl shadow-lg"
+                className="space-y-5 p-8 rounded-xl bg-gradient-to-br from-slate-900/60 to-black/40 border border-gray-700 backdrop-blur-lg shadow-xl"
             >
+                {/* Specifications */}
                 <FormField
                     control={form.control}
                     name="specification"
                     render={({ field }) => (
                         <FormItem>
-                            <FormLabel>Specifications</FormLabel>
+                            <FormLabel className="text-gray-200 font-semibold">
+                                Specification
+                            </FormLabel>
 
-                            {isLoading ? (
-                                <p>Loading...</p>
-                            ) : (
-                                <DropdownMenu>
-                                    <DropdownMenuTrigger asChild>
-                                        <Button
-                                            variant="outline"
-                                            className="w-full justify-between"
-                                        >
-                                            {selectedSpecs.length
-                                                ? selectedSpecsText
-                                                : "Select Specifications..."}
-                                            <ChevronDown size={16} />
-                                        </Button>
-                                    </DropdownMenuTrigger>
+                            <DropdownMenu>
+                                <DropdownMenuTrigger asChild>
+                                    <Button
+                                        variant="outline"
+                                        className="w-full justify-between text-gray-200 bg-black/30 border-gray-700 hover:bg-gray-800 transition-all"
+                                    >
+                                        {selectedSpecs.length
+                                            ? selectedText
+                                            : "Select..."}
+                                        <ChevronDown size={16} />
+                                    </Button>
+                                </DropdownMenuTrigger>
 
-                                    <DropdownMenuContent className="max-h-60 overflow-y-auto">
-                                        {specifications.map((spec) => {
+                                <DropdownMenuContent className="max-h-56 overflow-y-auto bg-gray-900/95 border-gray-700 backdrop-blur-md rounded-lg shadow-lg">
+                                    {isLoading ? (
+                                        <div className="p-3 text-gray-400">
+                                            Loading...
+                                        </div>
+                                    ) : (
+                                        specs.map((spec) => {
                                             const value = String(spec.id);
                                             const checked =
                                                 field.value.includes(value);
@@ -151,23 +151,21 @@ export const TeacherForm = ({
                                                 <DropdownMenuCheckboxItem
                                                     key={spec.id}
                                                     checked={checked}
-                                                    onCheckedChange={(
-                                                        state
-                                                    ) => {
-                                                        if (state)
-                                                            field.onChange([
-                                                                ...field.value,
-                                                                value,
-                                                            ]);
-                                                        else
-                                                            field.onChange(
-                                                                field.value.filter(
-                                                                    (v) =>
-                                                                        v !==
-                                                                        value
-                                                                )
-                                                            );
-                                                    }}
+                                                    onCheckedChange={(state) =>
+                                                        field.onChange(
+                                                            state
+                                                                ? [
+                                                                      ...field.value,
+                                                                      value,
+                                                                  ]
+                                                                : field.value.filter(
+                                                                      (v) =>
+                                                                          v !==
+                                                                          value
+                                                                  )
+                                                        )
+                                                    }
+                                                    className="text-gray-200 hover:bg-gray-800 flex justify-between"
                                                 >
                                                     {spec.name}
                                                     {checked && (
@@ -175,64 +173,85 @@ export const TeacherForm = ({
                                                     )}
                                                 </DropdownMenuCheckboxItem>
                                             );
-                                        })}
-                                    </DropdownMenuContent>
-                                </DropdownMenu>
-                            )}
+                                        })
+                                    )}
+                                </DropdownMenuContent>
+                            </DropdownMenu>
 
-                            <FormMessage />
+                            <FormMessage className="text-red-400" />
                         </FormItem>
                     )}
                 />
 
+                {/* Username */}
                 <FormField
                     name="username"
                     control={form.control}
                     render={({ field }) => (
                         <FormItem>
-                            <FormLabel>Username</FormLabel>
+                            <FormLabel className="text-gray-200 font-semibold">
+                                Username
+                            </FormLabel>
                             <FormControl>
-                                <Input {...field} placeholder="Username..." />
+                                <Input
+                                    {...field}
+                                    placeholder="Enter username..."
+                                    className="bg-black/40 border-gray-700 text-white placeholder-gray-400 focus:ring-cyan-500"
+                                />
                             </FormControl>
-                            <FormMessage />
+                            <FormMessage className="text-red-400" />
                         </FormItem>
                     )}
                 />
 
+                {/* Full Name */}
                 <FormField
                     name="name"
                     control={form.control}
                     render={({ field }) => (
                         <FormItem>
-                            <FormLabel>Full Name</FormLabel>
+                            <FormLabel className="text-gray-200 font-semibold">
+                                Full Name
+                            </FormLabel>
                             <FormControl>
-                                <Input {...field} placeholder="Full name..." />
+                                <Input
+                                    {...field}
+                                    placeholder="Enter full name..."
+                                    className="bg-black/40 border-gray-700 text-white focus:ring-cyan-500 placeholder-gray-400"
+                                />
                             </FormControl>
-                            <FormMessage />
+                            <FormMessage className="text-red-400" />
                         </FormItem>
                     )}
                 />
 
+                {/* Password for Create only */}
                 {!defaultValueData && (
                     <FormField
                         name="password"
                         control={form.control}
                         render={({ field }) => (
                             <FormItem>
-                                <FormLabel>Password</FormLabel>
+                                <FormLabel className="text-gray-200 font-semibold">
+                                    Password
+                                </FormLabel>
                                 <PasswordInput
                                     {...field}
-                                    placeholder="Password"
+                                    placeholder="Password..."
+                                    className="bg-black/40 border-gray-700 text-white placeholder-gray-400 focus:ring-cyan-500"
                                 />
-                                <FormMessage />
+                                <FormMessage className="text-red-400" />
                             </FormItem>
                         )}
                     />
                 )}
 
-                <Button type="submit" className="w-full">
-                    {(isPending || editIsPending) && <Spinner />}{" "}
-                    {defaultValueData ? "Update" : "Submit"}
+                <Button
+                    type="submit"
+                    className="w-full mt-4 bg-cyan-600 hover:bg-cyan-500 text-white font-bold py-3 rounded-xl shadow-lg hover:scale-105 transition-all duration-200 flex justify-center items-center gap-2"
+                >
+                    {(isPending || editIsPending) && <Spinner />}
+                    {defaultValueData ? "Update Teacher" : "Create Teacher"}
                 </Button>
             </form>
         </Form>

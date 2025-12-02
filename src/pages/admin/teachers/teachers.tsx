@@ -25,7 +25,7 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { MoreHorizontal } from "lucide-react";
+import { MoreHorizontal, UserIcon } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { TeacherFormWrapper } from "../components/teacher-form-wrapper";
 
@@ -34,9 +34,9 @@ import {
     AlertDialogAction,
     AlertDialogCancel,
     AlertDialogContent,
-    AlertDialogFooter,
     AlertDialogHeader,
     AlertDialogTitle,
+    AlertDialogFooter,
 } from "@/components/ui/alert-dialog";
 
 import { useDeleteTeacher } from "../service/mutation/useDeleteTeacher";
@@ -47,11 +47,10 @@ export const Teachers = () => {
     const { close: close2, isOpen: isOpen2, open: open2 } = useToggle();
     const queryClient = useQueryClient();
     const [editId, setEditId] = useState("");
-    const [deleteId, setDeleteId] = useState(""); // delete uchun id state
+    const [deleteId, setDeleteId] = useState("");
     const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
 
     const navigate = useNavigate();
-
     const deleteTeacherMutation = useDeleteTeacher(deleteId);
 
     const teachers: Teacher[] = React.useMemo(() => {
@@ -70,10 +69,40 @@ export const Teachers = () => {
     }, [data]);
 
     const teachersColumn: ColumnDef<Teacher>[] = [
-        { accessorKey: "count", header: "Count" },
-        { accessorKey: "name", header: "Name" },
-        { accessorKey: "specification", header: "Specification" },
-        { accessorKey: "username", header: "Username" },
+        { accessorKey: "count", header: "№" },
+        {
+            accessorKey: "name",
+            header: "Name",
+            cell: ({ row }) => (
+                <span
+                    className="cursor-pointer hover:text-cyan-300 transition-colors underline-offset-2 hover:underline"
+                    onClick={() =>
+                        navigate(
+                            `/app/admin/teachers/detail/${row.original.id}`
+                        )
+                    }
+                >
+                    {row.original.name}
+                </span>
+            ),
+        },
+        { accessorKey: "specification", header: "Specialization" },
+        {
+            accessorKey: "username",
+            header: "Username",
+            cell: ({ row }) => (
+                <span
+                    className="cursor-pointer hover:text-cyan-300 transition-colors underline-offset-2 hover:underline"
+                    onClick={() =>
+                        navigate(
+                            `/app/admin/teachers/detail/${row.original.id}`
+                        )
+                    }
+                >
+                    {row.original.username}
+                </span>
+            ),
+        },
         { accessorKey: "groups", header: "Groups" },
         {
             accessorKey: "isActive",
@@ -83,194 +112,200 @@ export const Teachers = () => {
                 const isChecked = teacher.isActive === "Active";
                 const updateStatus = useUpdateActive(String(teacher.id));
 
-                const handleStatusChange = (newCheckedState: boolean) => {
-                    toast.info(
-                        `Teacher ${teacher.name} statusi ${
-                            newCheckedState ? "Active" : "Blocked"
-                        } ga o'zgartirilmoqda...`
-                    );
-
-                    updateStatus.mutate(newCheckedState, {
+                const handleChange = (state: boolean) => {
+                    toast.info("Updating teacher status...");
+                    updateStatus.mutate(state, {
                         onSuccess: () => {
-                            toast.success(
-                                "Status muvaffaqiyatli o'zgartirildi!"
-                            );
+                            toast.success("Status updated!");
                             queryClient.invalidateQueries({
                                 queryKey: ["teacher_list"],
                             });
                         },
-                        onError: () => {
-                            toast.error("Xatolik yuz berdi!");
-                        },
+                        onError: () => toast.error("Error occurred!"),
                     });
                 };
 
                 return (
-                    <div className="flex items-center space-x-2">
+                    <div className="flex items-center gap-3">
                         <Switch
-                            className="cursor-pointer"
-                            id={`status-toggle-${teacher.id}`}
                             checked={isChecked}
-                            onCheckedChange={handleStatusChange}
                             disabled={updateStatus.isPending}
+                            onCheckedChange={handleChange}
+                            className={`
+            cursor-pointer transition-all duration-300 rounded-full
+
+            // Track Colors
+            data-[state=checked]:bg-green-500
+            data-[state=unchecked]:bg-red-600
+
+            // Shadow animatsiya
+            ${
+                isChecked
+                    ? "shadow-lg shadow-green-400/40"
+                    : "shadow-lg shadow-red-400/40"
+            }
+        `}
                         />
-                        <label
-                            htmlFor={`status-toggle-${teacher.id}`}
-                            className="text-sm font-medium"
+
+                        <span
+                            className={`text-sm font-medium transition-all duration-300 ${
+                                isChecked ? "text-green-400" : "text-red-400"
+                            }`}
                         >
-                            {isChecked ? "ON" : "OFF"}
-                        </label>
+                            {isChecked ? "Active" : "Blocked"}
+                        </span>
                     </div>
                 );
             },
         },
         {
             id: "actions",
-            header: "Actions",
+            header: "",
             cell: ({ row }) => {
                 const teacher = row.original;
 
-                const editTeacher = () => {
-                    if (teacher.id) {
-                        setEditId(teacher.id);
-                        open2();
-                    }
-                };
-
-                const openDelete = () => {
-                    setDeleteId(String(teacher.id));
-                    setOpenDeleteDialog(true);
-                };
-
                 return (
-                    <>
-                        <DropdownMenu>
-                            <DropdownMenuTrigger
-                                className="cursor-pointer"
-                                asChild
+                    <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                            <Button
+                                variant="ghost"
+                                className="h-8 w-8 p-0 hover:bg-gray-800 rounded-md"
                             >
-                                <Button variant="ghost" className="h-8 w-8 p-0">
-                                    <span className="sr-only">Open menu</span>
-                                    <MoreHorizontal className="h-4 w-4" />
-                                </Button>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent align="end">
-                                <DropdownMenuItem
-                                    className="cursor-pointer"
-                                    onClick={() =>
-                                        navigate(
-                                            `/app/admin/teacher/${teacher.id}`
-                                        )
-                                    }
-                                >
-                                    View details
-                                </DropdownMenuItem>
-                                <DropdownMenuSeparator />
-                                <DropdownMenuItem
-                                    className="cursor-pointer"
-                                    onClick={editTeacher}
-                                >
-                                    Edit
-                                </DropdownMenuItem>
-                                <DropdownMenuSeparator />
-                                <DropdownMenuItem
-                                    className="cursor-pointer"
-                                    onClick={openDelete}
-                                >
-                                    <p className="text-red-600">Delete</p>
-                                </DropdownMenuItem>
-                            </DropdownMenuContent>
-                        </DropdownMenu>
-                    </>
+                                <MoreHorizontal className="h-4 w-4 text-gray-300" />
+                            </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent
+                            align="end"
+                            className="bg-black border border-gray-800 text-gray-200 shadow-xl cursor-pointer"
+                        >
+                            <DropdownMenuItem
+                                onClick={() =>
+                                    navigate(
+                                        `/app/admin/teachers/detail/${teacher.id}`
+                                    )
+                                }
+                                className="cursor-pointer hover:bg-gray-800"
+                            >
+                                View Details
+                            </DropdownMenuItem>
+
+                            <DropdownMenuSeparator />
+
+                            <DropdownMenuItem
+                                className="cursor-pointer hover:bg-gray-800"
+                                onClick={() => {
+                                    setEditId(String(teacher.id));
+                                    open2();
+                                }}
+                            >
+                                Edit
+                            </DropdownMenuItem>
+
+                            <DropdownMenuSeparator />
+
+                            <DropdownMenuItem
+                                onClick={() => {
+                                    setDeleteId(String(teacher.id));
+                                    setOpenDeleteDialog(true);
+                                }}
+                                className="cursor-pointer hover:bg-red-900/50 text-red-400"
+                            >
+                                Delete
+                            </DropdownMenuItem>
+                        </DropdownMenuContent>
+                    </DropdownMenu>
                 );
             },
         },
     ];
 
-    const closeEditModal = () => {
-        setEditId("");
-        close2();
-    };
+    return isLoading ? (
+        <Spinner />
+    ) : (
+        <div className="space-y-5">
+            {/* MODALS */}
+            <Dialog onOpenChange={close} open={isOpen}>
+                <DialogContent className="bg-black text-gray-200 border border-gray-800 backdrop-blur-xl shadow-2xl">
+                    <DialogHeader>
+                        <DialogTitle className="text-lg font-bold text-blue-400">
+                            Create Teacher
+                        </DialogTitle>
+                    </DialogHeader>
+                    <DialogDescription>
+                        <TeacherForm closeModal={close} />
+                    </DialogDescription>
+                </DialogContent>
+            </Dialog>
 
-    const handleDeleteConfirm = () => {
-        deleteTeacherMutation.mutate(undefined, {
-            onSuccess: () => {
-                toast.success("Teacher deleted successfully");
-                queryClient.invalidateQueries({ queryKey: ["teacher_list"] });
-                setOpenDeleteDialog(false);
-            },
-            onError: () => toast.error("Error deleting teacher"),
-        });
-    };
+            <Dialog onOpenChange={() => close2()} open={isOpen2}>
+                <DialogContent className="bg-black text-gray-200 border border-gray-800 backdrop-blur-xl shadow-2xl">
+                    <DialogHeader>
+                        <DialogTitle className="text-lg font-bold text-yellow-400">
+                            Edit Teacher
+                        </DialogTitle>
+                    </DialogHeader>
+                    <DialogDescription>
+                        <TeacherFormWrapper
+                            closeEditModal={() => close2()}
+                            id={editId}
+                        />
+                    </DialogDescription>
+                </DialogContent>
+            </Dialog>
 
-    return (
-        <div>
-            {isLoading ? (
-                <Spinner />
-            ) : (
-                <>
-                    <Dialog onOpenChange={close} open={isOpen}>
-                        <DialogContent>
-                            <DialogHeader>
-                                <DialogTitle>Teacher Create</DialogTitle>
-                                <DialogDescription>
-                                    <TeacherForm closeModal={close} />
-                                </DialogDescription>
-                            </DialogHeader>
-                        </DialogContent>
-                    </Dialog>
+            {/* DELETE CONFIRM MODAL */}
+            <AlertDialog
+                open={openDeleteDialog}
+                onOpenChange={setOpenDeleteDialog}
+            >
+                <AlertDialogContent className="bg-black border border-gray-800 shadow-xl">
+                    <AlertDialogHeader>
+                        <AlertDialogTitle className="text-red-500 text-lg font-bold">
+                            Delete Confirmation
+                        </AlertDialogTitle>
+                        <p className="text-gray-300 mt-2">
+                            Are you sure? This action cannot be undone.
+                        </p>
+                    </AlertDialogHeader>
 
-                    <Dialog onOpenChange={closeEditModal} open={isOpen2}>
-                        <DialogContent>
-                            <DialogHeader>
-                                <DialogTitle>Teacher Edit</DialogTitle>
-                                <DialogDescription>
-                                    <TeacherFormWrapper
-                                        closeEditModal={closeEditModal}
-                                        id={editId}
-                                    />
-                                </DialogDescription>
-                            </DialogHeader>
-                        </DialogContent>
-                    </Dialog>
+                    <AlertDialogFooter>
+                        <AlertDialogCancel className="bg-gray-900 hover:bg-gray-700 text-white cursor-pointer">
+                            Cancel
+                        </AlertDialogCancel>
+                        <AlertDialogAction
+                            className="bg-red-600 hover:bg-red-700 text-white cursor-pointer"
+                            onClick={() =>
+                                deleteTeacherMutation.mutate(undefined, {
+                                    onSuccess: () => {
+                                        toast.success("Teacher deleted!");
+                                        setOpenDeleteDialog(false);
+                                        queryClient.invalidateQueries({
+                                            queryKey: ["teacher_list"],
+                                        });
+                                    },
+                                })
+                            }
+                        >
+                            {deleteTeacherMutation.isPending
+                                ? "Deleting..."
+                                : "Delete"}
+                        </AlertDialogAction>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+            </AlertDialog>
 
-                    <AlertDialog
-                        open={openDeleteDialog}
-                        onOpenChange={setOpenDeleteDialog}
-                    >
-                        <AlertDialogContent className="max-w-sm mx-auto bg-white rounded-xl shadow-lg p-6 border border-gray-200">
-                            <AlertDialogHeader className="text-center">
-                                <AlertDialogTitle className="text-lg font-bold text-gray-800">
-                                    Delete Teacher
-                                </AlertDialogTitle>
-                                <p className="mt-2 text-sm text-gray-500">
-                                    Are you sure you want to delete this
-                                    teacher? This action cannot be undone.
-                                </p>
-                            </AlertDialogHeader>
-                            <AlertDialogFooter className="mt-6 flex justify-end space-x-3">
-                                <AlertDialogCancel className="px-4 py-2 rounded-md border border-gray-300 text-gray-700 hover:bg-gray-100 cursor-pointer transition">
-                                    Cancel
-                                </AlertDialogCancel>
-                                <AlertDialogAction
-                                    className="px-4 py-2 rounded-md bg-red-600 text-white hover:bg-red-700 cursor-pointer transition"
-                                    onClick={handleDeleteConfirm}
-                                >
-                                    {deleteTeacherMutation.isPending
-                                        ? "Deleting..."
-                                        : "Delete"}
-                                </AlertDialogAction>
-                            </AlertDialogFooter>
-                        </AlertDialogContent>
-                    </AlertDialog>
+            {/* TABLE */}
+            <TeacherTable columns={teachersColumn} data={teachers} />
 
-                    <Button onClick={open} className="mb-5">
-                        Create
-                    </Button>
-
-                    <TeacherTable columns={teachersColumn} data={teachers} />
-                </>
-            )}
+            {/* CREATE BUTTON */}
+            <div className="flex justify-end">
+                <Button
+                    onClick={open}
+                    className="cursor-pointer flex items-center gap-2 bg-linear-to-r from-blue-600 to-cyan-500 hover:from-blue-500 hover:to-cyan-400 text-white px-5 py-2 shadow-xl rounded-lg transition-all duration-300 transform hover:scale-105"
+                >
+                    <UserIcon className="w-5 h-5" /> Add Teacher
+                </Button>
+            </div>
         </div>
     );
 };

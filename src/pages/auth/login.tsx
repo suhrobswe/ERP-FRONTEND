@@ -52,7 +52,7 @@ export const Login = () => {
                 Cookies.set("token", res.data.token);
                 Cookies.set("role", res.data.user.role.toLowerCase());
 
-                toast.success(res.message.uz, {
+                toast.success(res.message.en, {
                     position: "bottom-right",
                 });
 

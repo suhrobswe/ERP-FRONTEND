@@ -4,21 +4,27 @@ import { Link, useLocation } from "react-router-dom";
 export const ActiveLink = ({
     href,
     children,
+    className = "", 
 }: {
     href: string;
     children: React.ReactNode;
+    className?: string;
 }) => {
     const location = useLocation();
     const isActive = location.pathname === href;
 
     return (
         <Link
-            className={`${
-                isActive
-                    ? "bg-primary text-white shadow-md"
-                    : "text-gray-600 hover:bg-gray-100 hover:text-black"
-            } transition-all duration-200 flex items-center gap-3 p-3 rounded-lg`}
             to={href}
+            className={`
+                flex items-center gap-3 p-3 rounded-lg transition-all duration-300
+                ${
+                    isActive
+                        ? "bg-linear-to-r from-blue-500 to-cyan-400 text-white shadow-lg"
+                        : "text-gray-400 hover:text-blue-400 hover:bg-gray-800"
+                }
+                ${className}  {/* qo‘shimcha class qo‘shildi */}
+            `}
         >
             {children}
         </Link>
