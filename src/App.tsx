@@ -4,6 +4,7 @@ import { Register } from "./pages/auth/register";
 import { MainLayout } from "./layout/main-layout";
 import { Statistic } from "./pages/admin/statistic/statistic";
 import adminRoute from "./router/admin-route";
+import NotFound from "./NoTFound";
 
 function App() {
     return (
@@ -20,6 +21,7 @@ function App() {
 
                 <Route path="teacher"></Route>
             </Route>
+            <Route path="*" element={<NotFound />} />
         </Routes>
     );
 }

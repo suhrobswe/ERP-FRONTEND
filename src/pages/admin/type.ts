@@ -87,13 +87,19 @@ export interface TeacherDetailT {
 }
 
 export interface SpecificationItem {
-  id: number;
-  category: string;
-  name: string;
+    id: number;
+    category: string;
+    name: string;
 }
 
 export interface SpecificationResponse {
-  statusCode: number;
-  message: { uz: string; en: string; ru: string };
-  data: SpecificationItem[];
+    statusCode: number;
+    message: { uz: string; en: string; ru: string };
+    data: SpecificationItem[];
+}
+
+export interface FormProps {
+    defaultValueData?: TeacherDetailT;
+    closeModal?: () => void;
+    teacherId?: string;
 }
