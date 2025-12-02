@@ -1,17 +1,3 @@
-// ================================
-// Base Interface (Common fields)
-// ================================
-export interface IBaseEntity {
-    id: string;
-    isActive: boolean;
-    isDeleted: boolean;
-    createdAt: string;
-    updatedAt: string;
-}
-
-// ================================
-// Pagination Generic Response
-// ================================
 export interface IResponse<T> {
     currentPage: number;
     pageSize: number;
@@ -19,79 +5,95 @@ export interface IResponse<T> {
     to: number;
     totalElements: number;
     totalPages: number;
+
+    data: T[];
+}
+
+export type Teacher = {
+    count: number;
+    name: string;
+    id?: string;
+    specification: string;
+    isActive: "Active" | "Blocked";
+    groups: number;
+    username: string;
+};
+
+export interface TeacherList {
+    createdAt: string;
+    avatarUrl: string;
+    groups: {
+        createdAt: string;
+        id: string;
+        isActive: boolean;
+        isDeleted: boolean;
+        lessonTime: string;
+        name: string;
+        teacherId: string;
+        updatedAt: string;
+    }[];
+    id: string;
+    isActive: boolean;
+    isDeleted: boolean;
+    name: string;
+    password: string;
+    role: string;
+    specifications: {
+        id: string;
+        category: string;
+        name: string;
+    };
+    updatedAt: string;
+    username: string;
+}
+
+export interface TeacherField {
+    username: string;
+    password?: string;
+    specification: string[];
+    name: string;
+}
+
+export interface TeacherDetailT {
+    statusCode: number;
     message: {
         uz: string;
         en: string;
         ru: string;
     };
-    data: T[];
+    data: {
+        createdAt: string;
+        avatarUrl: string;
+        groups: {
+            createdAt: string;
+            id: string;
+            isActive: boolean;
+            isDeleted: boolean;
+            lessonTime: string;
+            name: string;
+            teacherId: string;
+            updatedAt: string;
+        }[];
+        id: string;
+        isActive: boolean;
+        isDeleted: boolean;
+        name: string;
+        password: string;
+        role: string;
+        specification: string;
+        updatedAt: string;
+        username: string;
+    };
 }
 
-// ================================
-// Student Model
-// ================================
-export interface IStudent extends IBaseEntity {
-    name: string;
-    email: string;
-    password: string;
-    role: string;
-    groupId: string;
+export interface SpecificationItem {
+  id: number;
+  category: string;
+  name: string;
 }
 
-// ================================
-// Group Models
-// ================================
-
-// Preview type (Teacher ichidagi groups uchun)
-export interface IGroupPreview {
-    id: string;
-    name: string;
-    lessonTime: string;
-    teacherId: string;
-    createdAt: string;
-    updatedAt: string;
-    isActive: boolean;
-    isDeleted: boolean;
+export interface SpecificationResponse {
+  statusCode: number;
+  message: { uz: string; en: string; ru: string };
+  data: SpecificationItem[];
 }
-
-export type GroupT = {
-    id: string;
-    name: string;
-    teacher: string;
-    specification: string;
-    studentCount: number;
-    isActive: "Active" | "Blocked";
-    index: number;
-};
-
-// Full group type (GET /groups response)
-export interface IGroup extends IBaseEntity {
-    name: string;
-    lessonTime: string;
-    teacherId: string;
-    teacher: ITeacher;
-    students?: IStudent[];
-}
-
-// ================================
-// Teacher Models
-// ================================
-export interface ITeacher extends IBaseEntity {
-    name: string;
-    username: string;
-    password: string;
-    role: string;
-    specification: string;
-    groups?: IGroupPreview[];
-}
-
-// UI Table mapping format
-export type Teacher = {
-    id?: string;
-    name: string;
-    username: string;
-    specification: string;
-    groups: number;
-    count: number;
-    isActive: "Active" | "Blocked";
-};
