@@ -5,6 +5,8 @@ import { MainLayout } from "./layout/main-layout";
 import { Statistic } from "./pages/admin/statistic/statistic";
 import adminRoute from "./router/admin-route";
 import NotFound from "./NoTFound";
+import teacherRouter from "./router/teacher-router";
+import { Group } from "./pages/teacher/groups/groups";
 
 function App() {
     return (
@@ -19,7 +21,12 @@ function App() {
                     ))}
                 </Route>
 
-                <Route path="teacher"></Route>
+                <Route path="teacher">
+                    <Route index element={<Group />} />
+                    {teacherRouter.map(({ page: Page, path }) => (
+                        <Route key={path} path={path} element={<Page />} />
+                    ))}
+                </Route>
             </Route>
             <Route path="*" element={<NotFound />} />
         </Routes>

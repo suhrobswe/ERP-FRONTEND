@@ -1,4 +1,12 @@
-import { Home, Inbox, Search, Settings, Camera, Users } from "lucide-react";
+import {
+    Home,
+    Inbox,
+    Search,
+    Settings,
+    Camera,
+    Users,
+    User,
+} from "lucide-react";
 
 export const links = {
     admin: [
@@ -10,7 +18,7 @@ export const links = {
     ],
 
     teacher: [
-        { title: "Home", url: "#", icon: Home },
-        { title: "Inbox", url: "#", icon: Camera },
+        { title: "Home", url: "teacher", icon: Home },
+        { title: "Profile", url: "teacher/profile", icon: User },
     ],
 };

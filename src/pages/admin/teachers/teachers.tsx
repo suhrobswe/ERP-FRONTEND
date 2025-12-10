@@ -55,16 +55,18 @@ export const Teachers = () => {
 
     const teachers: Teacher[] = React.useMemo(() => {
         if (!Array.isArray(data?.data)) return [];
+
         return data.data.map((item, index) => ({
-            groups: item.groups?.length || 0,
             id: item.id,
-            count: index + 1,
-            isActive: item.isActive ? "Active" : "Blocked",
             name: item.name,
-            specification: Array.isArray(item.specifications)
-                ? item.specifications.map((s) => s.name).join(", ")
-                : item.specifications?.name || "not yet",
             username: item.username,
+            role: item.role || "teacher",
+            isActive: item.isActive ? "Active" : "Blocked",
+            groups: item.groups?.length || 0,
+            count: index + 1,
+            specification: Array.isArray(item.specifications)
+                ? item.specifications.map((s) => ({ id: s.id, name: s.name }))
+                : [],
         }));
     }, [data]);
 
@@ -77,16 +79,20 @@ export const Teachers = () => {
                 <span
                     className="cursor-pointer hover:text-cyan-300 transition-colors underline-offset-2 hover:underline"
                     onClick={() =>
-                        navigate(
-                            `/app/admin/teachers/detail/${row.original.id}`
-                        )
+                        navigate(`/app/admin/teacher/${row.original.id}`)
                     }
                 >
                     {row.original.name}
                 </span>
             ),
         },
-        { accessorKey: "specification", header: "Specialization" },
+        {
+            accessorKey: "specification",
+            header: "Specialization",
+            cell: ({ row }) =>
+                row.original.specification.map((s) => s.name).join(", "),
+        },
+
         {
             accessorKey: "username",
             header: "Username",
@@ -94,9 +100,7 @@ export const Teachers = () => {
                 <span
                     className="cursor-pointer hover:text-cyan-300 transition-colors underline-offset-2 hover:underline"
                     onClick={() =>
-                        navigate(
-                            `/app/admin/teachers/detail/${row.original.id}`
-                        )
+                        navigate(`/app/admin/teachers/${row.original.id}`)
                     }
                 >
                     {row.original.username}
@@ -181,7 +185,7 @@ export const Teachers = () => {
                             <DropdownMenuItem
                                 onClick={() =>
                                     navigate(
-                                        `/app/admin/teachers/detail/${teacher.id}`
+                                        `/app/admin/teachers/${teacher.id}`
                                     )
                                 }
                                 className="cursor-pointer hover:bg-gray-800"
@@ -223,7 +227,6 @@ export const Teachers = () => {
         <Spinner />
     ) : (
         <div className="space-y-5">
-            {/* MODALS */}
             <Dialog onOpenChange={close} open={isOpen}>
                 <DialogContent className="bg-black text-gray-200 border border-gray-800 backdrop-blur-xl shadow-2xl">
                     <DialogHeader>
@@ -242,7 +245,7 @@ export const Teachers = () => {
                     <DialogHeader>
                         <DialogTitle className="text-lg font-bold text-yellow-400">
                             Edit Teacher
-                        </DialogTitle>
+                        </DialogTitle>open
                     </DialogHeader>
                     <DialogDescription>
                         <TeacherFormWrapper
@@ -253,7 +256,6 @@ export const Teachers = () => {
                 </DialogContent>
             </Dialog>
 
-            {/* DELETE CONFIRM MODAL */}
             <AlertDialog
                 open={openDeleteDialog}
                 onOpenChange={setOpenDeleteDialog}
@@ -294,10 +296,8 @@ export const Teachers = () => {
                 </AlertDialogContent>
             </AlertDialog>
 
-            {/* TABLE */}
             <TeacherTable columns={teachersColumn} data={teachers} />
 
-            {/* CREATE BUTTON */}
             <div className="flex justify-end">
                 <Button
                     onClick={open}

@@ -11,6 +11,9 @@ import { TeacherForm } from "../components/teacher-form";
 import { Spinner } from "@/components/ui/spinner";
 import defaultProfileImage from "../../../assets/profile.jpg";
 import { ArrowLeft, Camera, Upload } from "lucide-react";
+import { useUpdateActive } from "../service/mutation/useUpdateActive";
+import { Switch } from "@/components/ui/switch";
+import { useSpecification } from "../service/query/useSpecification";
 
 export const TeacherDetail = () => {
     const { id } = useParams();
@@ -19,6 +22,21 @@ export const TeacherDetail = () => {
 
     const { data, isLoading, isFetching } = useTeacherDetail(id as string);
     const { mutate, isPending } = useUploadImage(id as string);
+
+    const updateStatus = useUpdateActive(String(id));
+
+    const handleStatusChange = (state: boolean) => {
+        toast.info("Updating status...");
+        updateStatus.mutate(state, {
+            onSuccess: () => {
+                toast.success("Status updated");
+                client.invalidateQueries({ queryKey: ["teacher", id] });
+            },
+            onError: () => toast.error("Error updating status"),
+        });
+    };
+
+    const {} = useSpecification();
 
     const uploadImage = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
@@ -51,27 +69,22 @@ export const TeacherDetail = () => {
     return (
         <div className="min-h-screen bg-[#050505] px-5 py-10">
             <div className="max-w-6xl mx-auto space-y-10">
-                {/* Back Button */}
                 <button
                     onClick={() => navigate(-1)}
-                    className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg border border-[#1a1a1a] bg-[#0b0b0b] text-gray-300 hover:text-white hover:bg-[#131313] transition-all duration-300 hover:scale-[1.03] shadow-md"
+                    className="cursor-pointer inline-flex items-center gap-2 px-4 py-2.5 rounded-lg border border-[#1a1a1a] bg-[#0b0b0b] text-gray-300 hover:text-white hover:bg-[#131313] transition-all duration-300 hover:scale-[1.03] shadow-md"
                 >
                     <ArrowLeft className="w-4 h-4" />
                     Back
                 </button>
 
-                {/* Main Card */}
                 <div className="border border-[#1e1e1e] rounded-2xl bg-[#0e0e0e] shadow-[0_0_30px_rgba(0,0,0,0.45)] overflow-hidden backdrop-blur-md">
-                    {/* Header */}
                     <div className="relative px-10 py-14 bg-[#111]">
-                        {/* Ambient Glow */}
                         <div className="absolute inset-0 opacity-20">
                             <div className="w-96 h-96 bg-blue-500 blur-[140px] absolute -right-20 top-0"></div>
                             <div className="w-96 h-96 bg-purple-500 blur-[140px] absolute -left-20 bottom-0"></div>
                         </div>
 
                         <div className="relative z-10 flex flex-col md:flex-row gap-10 items-center md:items-end">
-                            {/* Avatar */}
                             <div className="relative group">
                                 <div className="w-40 h-40 rounded-full overflow-hidden border-[3px] border-white/20 shadow-xl group-hover:scale-[1.03] transition-all duration-300">
                                     {isPending || isFetching ? (
@@ -107,7 +120,6 @@ export const TeacherDetail = () => {
                                 />
                             </div>
 
-                            {/* Info */}
                             <div className="text-white space-y-2">
                                 <h1 className="text-4xl font-bold tracking-tight">
                                     {data?.data.name}
@@ -116,20 +128,39 @@ export const TeacherDetail = () => {
                                     {data?.data.specification}
                                 </p>
 
-                                <span
-                                    className={`inline-block px-4 py-2 rounded-full text-sm font-medium border ${
-                                        data?.data.isActive
-                                            ? "border-green-400 text-green-400 bg-green-400/10"
-                                            : "border-red-400 text-red-400 bg-red-400/10"
-                                    }`}
-                                >
-                                    {data?.data.isActive ? "Active" : "Blocked"}
-                                </span>
+                                <div className="flex items-center gap-3 mt-2">
+                                    <Switch
+                                        checked={data?.data.isActive}
+                                        disabled={updateStatus.isPending}
+                                        onCheckedChange={handleStatusChange}
+                                        className={`
+            cursor-pointer transition-all duration-300 rounded-full
+            data-[state=checked]:bg-green-500
+            data-[state=unchecked]:bg-red-600
+            ${
+                data?.data.isActive
+                    ? "shadow-lg shadow-green-400/40"
+                    : "shadow-lg shadow-red-400/40"
+            }
+        `}
+                                    />
+
+                                    <span
+                                        className={`text-sm font-medium transition-all duration-300 ${
+                                            data?.data.isActive
+                                                ? "text-green-400"
+                                                : "text-red-400"
+                                        }`}
+                                    >
+                                        {data?.data.isActive
+                                            ? "Active"
+                                            : "Blocked"}
+                                    </span>
+                                </div>
                             </div>
                         </div>
                     </div>
 
-                    {/* Form Section */}
                     <div className="p-10 space-y-8">
                         <div>
                             <h2 className="text-2xl font-semibold text-white">
@@ -149,12 +180,10 @@ export const TeacherDetail = () => {
                         </div>
                     </div>
 
-                    {/* Footer */}
                     <div className="px-10 py-6 border-t border-[#1a1a1a] text-gray-500 text-sm flex justify-between">
                         <span>
                             Last updated: {new Date().toLocaleDateString()}
                         </span>
-                        <span>ID: {id}</span>
                     </div>
                 </div>
             </div>

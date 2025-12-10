@@ -47,24 +47,22 @@ export function AppSidebar({ role }: { role: "admin" | "teacher" }) {
             <SidebarContent className="bg-black">
                 <SidebarGroupContent className="p-4 bg-black">
                     <SidebarMenu className="space-y-2 bg-black">
-                        {links[role].map((item) => (
-                            <SidebarMenuItem
-                                key={item.title}
-                                className="bg-black"
-                            >
-                                <SidebarMenuButton asChild>
-                                    <ActiveLink
-                                        href={item.url}
-                                        className="flex items-center gap-3 px-3 py-2 rounded-lg transition-all duration-300 hover:bg-[#111] text-gray-300 hover:text-cyan-400 glow"
-                                    >
-                                        <item.icon className="text-xl opacity-80 group-hover:opacity-100" />
-                                        <span className="text-sm font-medium">
+                        {links[role]
+                            .filter(
+                                (item) =>
+                                    role !== "teacher" ||
+                                    ["Home", "Profile"].includes(item.title)
+                            )
+                            .map((item) => (
+                                <SidebarMenuItem key={item.title}>
+                                    <SidebarMenuButton asChild>
+                                        <ActiveLink href={item.url}>
+                                            <item.icon />
                                             {item.title}
-                                        </span>
-                                    </ActiveLink>
-                                </SidebarMenuButton>
-                            </SidebarMenuItem>
-                        ))}
+                                        </ActiveLink>
+                                    </SidebarMenuButton>
+                                </SidebarMenuItem>
+                            ))}
                     </SidebarMenu>
                 </SidebarGroupContent>
             </SidebarContent>

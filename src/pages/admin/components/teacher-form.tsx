@@ -103,7 +103,10 @@ export const TeacherForm = ({
 
     const selectedSpecs = form.watch("specification");
     const selectedText = selectedSpecs
-        .map((id) => specs.find((s) => String(s.id) === id)?.name)
+        .map((id) => {
+            const spec = specs.find((s) => String(s.id) === String(id));
+            return spec?.name || "";
+        })
         .filter(Boolean)
         .join(", ");
 
@@ -111,9 +114,8 @@ export const TeacherForm = ({
         <Form {...form}>
             <form
                 onSubmit={form.handleSubmit(onSubmit)}
-                className="space-y-5 p-8 rounded-xl bg-gradient-to-br from-slate-900/60 to-black/40 border border-gray-700 backdrop-blur-lg shadow-xl"
+                className="space-y-5 p-8 rounded-xl bg-linear-to-br from-slate-900/60 to-black/40 border border-gray-700 backdrop-blur-lg shadow-xl"
             >
-                {/* Specifications */}
                 <FormField
                     control={form.control}
                     name="specification"
@@ -183,7 +185,6 @@ export const TeacherForm = ({
                     )}
                 />
 
-                {/* Username */}
                 <FormField
                     name="username"
                     control={form.control}
@@ -204,7 +205,6 @@ export const TeacherForm = ({
                     )}
                 />
 
-                {/* Full Name */}
                 <FormField
                     name="name"
                     control={form.control}
@@ -225,7 +225,6 @@ export const TeacherForm = ({
                     )}
                 />
 
-                {/* Password for Create only */}
                 {!defaultValueData && (
                     <FormField
                         name="password"
@@ -248,7 +247,7 @@ export const TeacherForm = ({
 
                 <Button
                     type="submit"
-                    className="w-full mt-4 bg-cyan-600 hover:bg-cyan-500 text-white font-bold py-3 rounded-xl shadow-lg hover:scale-105 transition-all duration-200 flex justify-center items-center gap-2"
+                    className="cursor-pointer w-full mt-4 bg-cyan-600 hover:bg-cyan-500 text-white font-bold py-3 rounded-xl shadow-lg hover:scale-105 transition-all duration-200 flex justify-center items-center gap-2"
                 >
                     {(isPending || editIsPending) && <Spinner />}
                     {defaultValueData ? "Update Teacher" : "Create Teacher"}

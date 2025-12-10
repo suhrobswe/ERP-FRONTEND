@@ -4,6 +4,7 @@ import { Profile } from "@/pages/admin/profile";
 import { Settings } from "@/pages/admin/settings";
 import { Groups } from "@/pages/admin/groups/groups";
 import { TeacherDetail } from "@/pages/admin/teachers/teacher-detail";
+import { GroupDetail } from "@/pages/admin/groups/group-detail";
 
 export default [
     {
@@ -11,8 +12,12 @@ export default [
         page: Teachers,
     },
     {
-        path: "teachers/detail/:id",
+        path: "teacher/:id",
         page: TeacherDetail,
+    },
+     {
+        path: "group/:id",
+        page: GroupDetail,
     },
     {
         path: "students",
