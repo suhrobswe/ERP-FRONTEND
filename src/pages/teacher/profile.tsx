@@ -212,7 +212,6 @@ export const Profile = () => {
                                 </p>
                             </div>
 
-                            {/* Last Updated */}
                             <div className="bg-slate-700/30 hover:bg-slate-700/50 border border-slate-600/50 rounded-xl p-4 transition-all duration-300">
                                 <div className="flex items-center gap-2 mb-2">
                                     <Calendar
