@@ -1,3 +1,3 @@
-import { User } from "lucide-react";
+import { Profile } from "@/pages/teacher/profile";
 
-export default [{ path: "profile", page: User }];
+export default [{ path: "profile", page: Profile }];

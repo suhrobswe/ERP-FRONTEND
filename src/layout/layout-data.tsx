@@ -1,12 +1,4 @@
-import {
-    Home,
-    Inbox,
-    Search,
-    Settings,
-    Camera,
-    Users,
-    User,
-} from "lucide-react";
+import { Home, Inbox, Search, Settings, Users, User } from "lucide-react";
 
 export const links = {
     admin: [
