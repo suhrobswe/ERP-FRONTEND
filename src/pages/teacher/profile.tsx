@@ -155,7 +155,6 @@ export const Profile = () => {
                                     </div>
                                 </div>
 
-                                {/* Status */}
                                 <div className="flex items-center gap-3">
                                     <Switch
                                         checked={profile?.isActive}
