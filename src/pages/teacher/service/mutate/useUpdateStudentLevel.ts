@@ -3,7 +3,9 @@ import { useMutation } from "@tanstack/react-query";
 
 export const useUpdateStudentLevel = (id: string) => {
     return useMutation({
-        mutationFn: (data) =>
-            request.patch(`/student/level/${id}`, data).then((res) => res.data),
+        mutationFn: (level: number) =>
+            request
+                .patch(`/student/level/${id}`, { level })
+                .then((res) => res.data),
     });
 };

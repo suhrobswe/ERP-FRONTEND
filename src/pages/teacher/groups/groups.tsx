@@ -37,7 +37,9 @@ export const Group = () => {
                     <span
                         className="cursor-pointer hover:text-cyan-300 transition-colors underline-offset-2 hover:underline"
                         onClick={() =>
-                            navigate(`/app/teacher/group/for-teacher/${row.original.id}`)
+                            navigate(
+                                `/app/teacher/group/for-teacher/${row.original.id}`
+                            )
                         }
                     >
                         {row.original.name}
@@ -46,6 +48,7 @@ export const Group = () => {
             },
         },
         { accessorKey: "studentsCount", header: "Students" },
+
         {
             accessorKey: "isActive",
             header: "Status",
@@ -80,6 +83,7 @@ export const Group = () => {
                 );
             },
         },
+
         { accessorKey: "startTime", header: "Start Time" },
         { accessorKey: "endTime", header: "End Time" },
         { accessorKey: "durationInMonths", header: "Duration In Months" },

@@ -7,6 +7,7 @@ export interface IMessage {
 
 // Student interface
 export interface Student {
+    studentImg: string | undefined;
     id: string;
     isActive: boolean;
     isDeleted: boolean;
