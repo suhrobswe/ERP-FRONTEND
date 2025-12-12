@@ -11,6 +11,7 @@ export const links = {
 
     teacher: [
         { title: "Home", url: "teacher", icon: Home },
+        { title: "Students", url: "teacher/students", icon: Users },
         { title: "Profile", url: "teacher/profile", icon: User },
     ],
 };

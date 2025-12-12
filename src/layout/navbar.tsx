@@ -22,7 +22,6 @@ import { links } from "@/layout/layout-data";
 export function AppSidebar({ role }: { role: "admin" | "teacher" }) {
     return (
         <Sidebar className="border-r border-[#0e0e0e] bg-[#020202] bg-linear-to-b from-black via-[#0b0b0b] to-[#020202] shadow-2xl">
-            {/* Header */}
             <SidebarHeader className="flex justify-center py-8 border-b border-[#111] bg-linear-to-r from-black via-[#0a0a0a] to-black">
                 <Link
                     to={`/app/${role}`}
@@ -43,7 +42,6 @@ export function AppSidebar({ role }: { role: "admin" | "teacher" }) {
                 </Link>
             </SidebarHeader>
 
-            {/* Content */}
             <SidebarContent className="bg-black">
                 <SidebarGroupContent className="p-4 bg-black">
                     <SidebarMenu className="space-y-2 bg-black">
@@ -51,7 +49,9 @@ export function AppSidebar({ role }: { role: "admin" | "teacher" }) {
                             .filter(
                                 (item) =>
                                     role !== "teacher" ||
-                                    ["Home", "Profile"].includes(item.title)
+                                    ["Home", "Profile", "Students"].includes(
+                                        item.title
+                                    )
                             )
                             .map((item) => (
                                 <SidebarMenuItem key={item.title}>
@@ -67,7 +67,6 @@ export function AppSidebar({ role }: { role: "admin" | "teacher" }) {
                 </SidebarGroupContent>
             </SidebarContent>
 
-            {/* Footer */}
             <SidebarFooter className="border-t border-[#111] p-4 bg-linear-to-r from-black via-[#090909] to-black">
                 <Button className="w-full bg-linear-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white font-semibold rounded-lg flex items-center justify-center gap-2 transition-all duration-300 transform hover:scale-[1.03] shadow-red-600/30 shadow-md hover:shadow-red-500/50">
                     <LogOut className="w-4 h-4" />
