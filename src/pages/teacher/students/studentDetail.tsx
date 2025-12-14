@@ -120,9 +120,7 @@ export const StudentDetail = () => {
             <div className="bg-slate-800/50 border border-slate-700 rounded-xl overflow-hidden backdrop-blur-sm mb-6">
                 <div className={`h-32 bg-linear-to-r ${levelInfo.bg}`}></div>
 
-                {/* Profile Content */}
                 <div className="relative px-6 pb-6">
-                    {/* Avatar */}
                     <div className="flex items-start gap-6 -mt-16 mb-6">
                         <div className="p-1 bg-slate-800 rounded-xl border border-slate-700">
                             {student?.avatarUrl ? (

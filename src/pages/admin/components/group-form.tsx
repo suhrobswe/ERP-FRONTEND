@@ -48,15 +48,15 @@ export const GroupForm = ({ closeModal }: GroupFormProps) => {
     const { mutate, isPending } = useCreateGroup();
 
     const onSubmit = (data: GroupFormInput) => {
-        // mutate(data, {
-        //     onSuccess: (res) => {
-        //         toast.success(res.message.en || "Group created!");
-        //         client.invalidateQueries({ queryKey: ["group_list"] });
-        //         form.reset();
-        //         closeModal?.();
-        //     },
-        //     onError: () => toast.error("Error creating group!"),
-        // });
+        mutate(data as any, {
+            onSuccess: (res) => {
+                toast.success(res.message.en || "Group created!");
+                client.invalidateQueries({ queryKey: ["group_list"] });
+                form.reset();
+                closeModal?.();
+            },
+            onError: () => toast.error("Error creating group!"),
+        });
     };
 
     return (
@@ -65,7 +65,6 @@ export const GroupForm = ({ closeModal }: GroupFormProps) => {
                 onSubmit={form.handleSubmit(onSubmit)}
                 className="space-y-5 p-8 rounded-xl bg-linear-to-br from-slate-900/60 to-black/40 border border-gray-700 backdrop-blur-lg shadow-xl"
             >
-                {/* Group Name */}
                 <FormField
                     name="name"
                     control={form.control}
@@ -86,7 +85,6 @@ export const GroupForm = ({ closeModal }: GroupFormProps) => {
                     )}
                 />
 
-                {/* Teacher Select */}
                 <FormField
                     name="teacherId"
                     control={form.control}
@@ -120,7 +118,6 @@ export const GroupForm = ({ closeModal }: GroupFormProps) => {
                     )}
                 />
 
-                {/* Start Time */}
                 <FormField
                     name="startTime"
                     control={form.control}
@@ -141,7 +138,6 @@ export const GroupForm = ({ closeModal }: GroupFormProps) => {
                     )}
                 />
 
-                {/* End Time */}
                 <FormField
                     name="endTime"
                     control={form.control}
@@ -162,7 +158,6 @@ export const GroupForm = ({ closeModal }: GroupFormProps) => {
                     )}
                 />
 
-                {/* Submit Button */}
                 <Button
                     type="submit"
                     className="cursor-pointer w-full mt-4 bg-cyan-600 hover:bg-cyan-500 text-white font-bold py-3 rounded-xl shadow-lg hover:scale-105 transition-all duration-200 flex justify-center items-center gap-2"
@@ -174,4 +169,3 @@ export const GroupForm = ({ closeModal }: GroupFormProps) => {
         </Form>
     );
 };
-

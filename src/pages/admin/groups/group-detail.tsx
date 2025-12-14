@@ -107,7 +107,6 @@ export const GroupDetail = () => {
                         </div>
                     </div>
 
-                    {/* Status & Students count */}
                     <div className="flex flex-col sm:flex-row sm:justify-between gap-4 mb-6 items-center">
                         <div>
                             <span className="text-gray-400 block">
@@ -146,7 +145,6 @@ export const GroupDetail = () => {
                         </div>
                     </div>
 
-                    {/* Students List */}
                     <div>
                         <h2 className="text-2xl font-semibold text-white mb-2">
                             Students List

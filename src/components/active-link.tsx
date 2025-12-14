@@ -4,7 +4,7 @@ import { Link, useLocation } from "react-router-dom";
 export const ActiveLink = ({
     href,
     children,
-    className = "", 
+    className = "",
 }: {
     href: string;
     children: React.ReactNode;
@@ -23,7 +23,7 @@ export const ActiveLink = ({
                         ? "bg-linear-to-r from-blue-500 to-cyan-400 text-white shadow-lg"
                         : "text-gray-400 hover:text-blue-400 hover:bg-gray-800"
                 }
-                ${className}  {/* qo‘shimcha class qo‘shildi */}
+                ${className} 
             `}
         >
             {children}

@@ -85,7 +85,6 @@ export const Profile = () => {
                             </div>
 
                             <div className="grow w-full md:w-auto">
-                                {/* Name and Role */}
                                 <div className="mb-6">
                                     <h1 className="text-3xl sm:text-4xl font-bold text-white mb-2">
                                         {profile?.name}
