@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 
 export const useGroup = (id: string) => {
     return useQuery({
-        queryKey: ["group"],
+        queryKey: ["group",id],
         queryFn: () =>
             request.get(`/group/for-teacher/${id}`).then((res) => res.data),
     });
