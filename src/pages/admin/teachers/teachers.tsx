@@ -138,11 +138,9 @@ export const Teachers = () => {
                             className={`
             cursor-pointer transition-all duration-300 rounded-full
 
-            // Track Colors
             data-[state=checked]:bg-green-500
             data-[state=unchecked]:bg-red-600
 
-            // Shadow animatsiya
             ${
                 isChecked
                     ? "shadow-lg shadow-green-400/40"
@@ -245,7 +243,8 @@ export const Teachers = () => {
                     <DialogHeader>
                         <DialogTitle className="text-lg font-bold text-yellow-400">
                             Edit Teacher
-                        </DialogTitle>open
+                        </DialogTitle>
+                        open
                     </DialogHeader>
                     <DialogDescription>
                         <TeacherFormWrapper

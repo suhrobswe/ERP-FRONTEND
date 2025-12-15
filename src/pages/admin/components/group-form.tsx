@@ -17,7 +17,6 @@ import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-// Form validation schema
 const groupFormSchema = z.object({
     name: z.string().min(1, "Group name is required"),
     teacherId: z.string().min(1, "Teacher is required"),

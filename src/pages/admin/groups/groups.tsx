@@ -38,7 +38,7 @@ export const Groups = () => {
 
         return data.data.map((item, index) => ({
             count: index + 1,
-            id: item.id, // Group id
+            id: item.id,
             name: item.name,
             teacher: item.teacher?.name ?? "N/A",
             teacherId: item.teacher?.id ?? "",
@@ -151,11 +151,9 @@ export const Groups = () => {
                             className={`
             cursor-pointer transition-all duration-300 rounded-full
 
-            // Track Colors
             data-[state=checked]:bg-green-500
             data-[state=unchecked]:bg-red-600
 
-            // Shadow animatsiya
             ${
                 isChecked
                     ? "shadow-lg shadow-green-400/40"

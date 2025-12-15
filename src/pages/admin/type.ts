@@ -95,8 +95,8 @@ export interface IGroup {
     name: string;
     teacherId: string;
     teacherImg: string;
-    startTime: string; // "08:30:00" format
-    endTime: string; // "11:30:00" format
+    startTime: string;
+    endTime: string;
     durationInMonths: number;
     isActive: boolean;
     isDeleted: boolean;
@@ -173,7 +173,7 @@ export type TeacherForUI = {
     groups: number;
     count: number;
     isActive: string;
-    specification: string; // string formatda
+    specification: string;
 };
 
 

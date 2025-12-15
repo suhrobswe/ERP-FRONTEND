@@ -24,7 +24,7 @@ export const Profile = () => {
             <div className="max-w-4xl mx-auto">
                 <button
                     onClick={() => navigate(-1)}
-                    className="flex items-center gap-2 px-4 py-2 rounded-lg bg-slate-800/50 hover:bg-slate-700/50 text-slate-300 hover:text-white transition-all duration-300 mb-8 border border-slate-700/50 hover:border-slate-600/50"
+                    className="cursor-pointer flex items-center gap-2 px-4 py-2 rounded-lg bg-slate-800/50 hover:bg-slate-700/50 text-slate-300 hover:text-white transition-all duration-300 mb-8 border border-slate-700/50 hover:border-slate-600/50"
                 >
                     <ArrowLeft className="w-4 h-4" />
                     Back

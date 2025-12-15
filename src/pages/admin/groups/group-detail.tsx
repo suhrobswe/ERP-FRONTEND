@@ -35,10 +35,8 @@ export const GroupDetail = () => {
     const handleStatusChange = (state: boolean) => {
         if (!group) return;
 
-        // 1. Darhol UI update qilamiz
         group.isActive = state;
 
-        // 2. Backendga yuboramiz
         toast.info("Updating group status...");
         updateStatus.mutate(state, {
             onSuccess: () => {
@@ -47,7 +45,6 @@ export const GroupDetail = () => {
             },
             onError: () => {
                 toast.error("Error occurred!");
-                // xato bo'lsa, oldingi state ni tiklaymiz
                 group.isActive = !state;
                 client.invalidateQueries({ queryKey: ["groupById", id] });
             },
@@ -59,7 +56,7 @@ export const GroupDetail = () => {
             <div className="max-w-5xl mx-auto space-y-10">
                 <button
                     onClick={() => navigate(-1)}
-                    className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg border border-[#1a1a1a] bg-[#0b0b0b] text-gray-300 hover:text-white hover:bg-[#131313] transition-all duration-300 hover:scale-[1.03] shadow-md"
+                    className="cursor-pointer inline-flex items-center gap-2 px-4 py-2.5 rounded-lg border border-[#1a1a1a] bg-[#0b0b0b] text-gray-300 hover:text-white hover:bg-[#131313] transition-all duration-300 hover:scale-[1.03] shadow-md"
                 >
                     <ArrowLeft className="w-4 h-4" />
                     Back
