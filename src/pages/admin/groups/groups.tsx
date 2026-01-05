@@ -25,7 +25,7 @@ export const Groups = () => {
 
     const navigate = useNavigate();
 
-    const { close, isOpen, open } = useToggle();
+    const { open } = useToggle();
 
     const client = useQueryClient();
 
