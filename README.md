@@ -9,6 +9,6 @@ A modern Educational ERP/CRM system featuring dedicated Admin, Teacher, and Stud
 
 Username: admin
 
-Password: password
+Password: admin
 
 ⚠️ This is a demo environment intended for testing and preview purposes only.
