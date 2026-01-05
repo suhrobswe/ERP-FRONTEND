@@ -3,7 +3,7 @@ import axios from "axios";
 import Cookies from "js-cookie";
 
 const request = axios.create({
-    baseURL: import.meta.env.VITE_BASE_URL || "http://localhost:4000",
+    baseURL: import.meta.env.VITE_BASE_URL || "http://localhost:3000/api/v1",
 });
 
 request.interceptors.request.use((config) => {
