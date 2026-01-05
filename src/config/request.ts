@@ -1,4 +1,3 @@
-import type { LoginResponse } from "@/pages/auth/types";
 import axios from "axios";
 import Cookies from "js-cookie";
 
@@ -25,7 +24,7 @@ request.interceptors.response.use(
         if (error.response?.status === 401 && !originalRequest._retry) {
             originalRequest._retry = true;
             try {
-                const response = await axios.post<LoginResponse>(
+                const response = await axios.post(
                     `${import.meta.env.VITE_BASE_URL}/refresh`
                 );
 
